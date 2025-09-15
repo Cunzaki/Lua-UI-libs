@@ -1078,6 +1078,22 @@ function Library:CreateToggle(config, section)
         if v then applyToggle(v) end
     end)
 
+    -- Add SetValue method to toggle
+    function toggle:SetValue(newValue)
+        toggle.value = newValue and true or false
+        if toggle.value then
+            toggleFill.Size = UDim2.new(0, 20, 0, 20)
+            checkIcon.ImageTransparency = 0
+            toggleText.TextColor3 = activeColor
+        else
+            toggleFill.Size = UDim2.new(0, 0, 0, 0)
+            checkIcon.ImageTransparency = 1
+            toggleText.TextColor3 = inactiveColor
+        end
+        toggle.callback(toggle.value)
+        Library.Values[toggle.flag] = { Toggle = toggle.value }
+    end
+    
     table.insert(section.components, toggle)
     return toggle
 end
