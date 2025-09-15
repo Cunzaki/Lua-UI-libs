@@ -321,6 +321,73 @@ function Library:CreateWindow(config)
             end
         end)
     end
+    
+    -- Global keybind handler for all created keybinds
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        
+        local keyName = nil
+        
+        -- Convert input to key name (same logic as in CreateKeybind)
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            local keyCode = input.KeyCode
+            
+            -- Skip WASD movement keys
+            if keyCode == Enum.KeyCode.W or keyCode == Enum.KeyCode.A or 
+               keyCode == Enum.KeyCode.S or keyCode == Enum.KeyCode.D then
+                return
+            end
+            
+            -- Simplify keyboard key names
+            if keyCode == Enum.KeyCode.LeftShift then
+                keyName = "LShift"
+            elseif keyCode == Enum.KeyCode.RightShift then
+                keyName = "RShift"
+            elseif keyCode == Enum.KeyCode.LeftControl then
+                keyName = "LCtrl"
+            elseif keyCode == Enum.KeyCode.RightControl then
+                keyName = "RCtrl"
+            elseif keyCode == Enum.KeyCode.LeftAlt then
+                keyName = "LAlt"
+            elseif keyCode == Enum.KeyCode.RightAlt then
+                keyName = "RAlt"
+            elseif keyCode == Enum.KeyCode.Return then
+                keyName = "Enter"
+            elseif keyCode == Enum.KeyCode.Escape then
+                keyName = "Esc"
+            elseif keyCode == Enum.KeyCode.Backspace then
+                keyName = "Back"
+            elseif keyCode == Enum.KeyCode.Tab then
+                keyName = "Tab"
+            elseif keyCode == Enum.KeyCode.Space then
+                keyName = "Space"
+            else
+                keyName = keyCode.Name
+            end
+        end
+        
+        -- Handle mouse input
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            keyName = "LMB"
+        elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
+            keyName = "RMB"
+        elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
+            keyName = "MMB"
+        elseif input.UserInputType == Enum.UserInputType.MouseButton4 then
+            keyName = "M4"
+        elseif input.UserInputType == Enum.UserInputType.MouseButton5 then
+            keyName = "M5"
+        end
+        
+        -- Check all active keybinds
+        if keyName then
+            for _, keybind in pairs(ActiveKeybinds) do
+                if keybind.key == keyName then
+                    keybind.callback(keyName)
+                end
+            end
+        end
+    end)
 
     if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
         Open_Interface = Instance.new("Frame")
@@ -2333,6 +2400,9 @@ function Library:CreateKeybind(config, section)
             end)
         end
     end)
+    
+    -- Add keybind to active keybinds for global handling
+    table.insert(ActiveKeybinds, keybind)
     
     table.insert(section.components, keybind)
     return keybind
