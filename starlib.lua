@@ -373,10 +373,6 @@ function Library:CreateWindow(config)
             keyName = "RMB"
         elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
             keyName = "MMB"
-        elseif input.UserInputType == Enum.UserInputType.MouseButton4 then
-            keyName = "M4"
-        elseif input.UserInputType == Enum.UserInputType.MouseButton5 then
-            keyName = "M5"
         end
         
         -- Check all active keybinds
@@ -3833,3 +3829,4 @@ MainFrame.Visible = true
 
 
 return Library
+
