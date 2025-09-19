@@ -158,7 +158,7 @@ local Build_Date = Instance.new("TextLabel")
 Build_Date.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
 Build_Date.TextColor3 = Color3.fromRGB(64, 64, 63)
 Build_Date.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Build_Date.Text = "Build date: " .. os.date("%d %B")
+Build_Date.Text = "Build type: Public"
 Build_Date.Name = "Build_Date"
 Build_Date.AnchorPoint = Vector2.new(0, 0.5)
 Build_Date.Size = UDim2.new(0, 1, 0, 1)
@@ -373,6 +373,10 @@ function Library:CreateWindow(config)
             keyName = "RMB"
         elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
             keyName = "MMB"
+        elseif input.UserInputType == Enum.UserInputType.MouseButton4 then
+            keyName = "M4"
+        elseif input.UserInputType == Enum.UserInputType.MouseButton5 then
+            keyName = "M5"
         end
         
         -- Check all active keybinds
@@ -986,6 +990,10 @@ function Library:CreateSection(config, tab)
         return Library:CreateColorpicker(config, self)
     end
     
+    function section:CreateButton(config)
+        return Library:CreateButton(config, self)
+    end
+    
     
     section.frame = sectionFrame
     section.targetPosition = targetPosition
@@ -1159,6 +1167,83 @@ function Library:CreateToggle(config, section)
     
     table.insert(section.components, toggle)
     return toggle
+end
+
+-- New: CreateButton component
+function Library:CreateButton(config, section)
+    if not section then
+        if not CurrentTab or not CurrentTab.sections.left[1] and not CurrentTab.sections.right[1] then
+            error("No section created. Call CreateSection first.")
+            return
+        end
+        section = CurrentTab.sections.left[1] or CurrentTab.sections.right[1]
+    end
+
+    local container = section.frame:FindFirstChild(section.position .. "_Container")
+
+    local button = {
+        text = config.ButtonText or config.Name or "Button",
+        callback = config.Callback or config.Function or function() end,
+        flag = config.Flag or (config.ButtonText or config.Name or ("button_" .. tostring(#section.components + 1)))
+    }
+
+    local buttonFrame = Instance.new("Frame")
+    buttonFrame.Name = "Button_Component"
+    buttonFrame.Size = UDim2.new(0, 318, 0, 28)
+    buttonFrame.BackgroundTransparency = 1
+    buttonFrame.Parent = container
+
+    local btn = Instance.new("TextButton")
+    btn.Name = "Button"
+    btn.Size = UDim2.new(1, -30, 0, 28)
+    btn.Position = UDim2.new(0, 15, 0, 0)
+    btn.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+    btn.AutoButtonColor = false
+    btn.Text = button.text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    btn.TextSize = 16
+    btn.Parent = buttonFrame
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = btn
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(33, 33, 33)
+    stroke.Parent = btn
+
+    local function tween(obj, goal, t)
+        local tw = createTween(obj, goal, t or 0.15)
+        tw:Play()
+    end
+
+    btn.MouseEnter:Connect(function()
+        tween(stroke, {Color = Library.Accent})
+    end)
+    btn.MouseLeave:Connect(function()
+        tween(stroke, {Color = Color3.fromRGB(33, 33, 33)})
+    end)
+    btn.MouseButton1Down:Connect(function()
+        tween(btn, {BackgroundColor3 = Color3.fromRGB(20, 20, 20)})
+    end)
+    btn.MouseButton1Up:Connect(function()
+        tween(btn, {BackgroundColor3 = Color3.fromRGB(26, 26, 26)})
+    end)
+
+    btn.MouseButton1Click:Connect(function()
+        task.spawn(function()
+            pcall(button.callback)
+        end)
+    end)
+
+    function button:SetText(newText)
+        button.text = tostring(newText)
+        btn.Text = button.text
+    end
+
+    table.insert(section.components, button)
+    return button
 end
 
 function Library:CreateSlider(config, section)
@@ -3829,4 +3914,3 @@ MainFrame.Visible = true
 
 
 return Library
-
