@@ -751,6 +751,11 @@ function Library:SwitchTab(tab)
     
     CurrentTab = tab
     
+    -- Update Current_Tab_Icon to match the selected tab's icon
+    if Current_Tab_Icon and tab.icon then
+        Current_Tab_Icon.Image = tab.icon
+    end
+    
    
     for _, section in pairs(tab.sections.left) do
         if section.frame then
