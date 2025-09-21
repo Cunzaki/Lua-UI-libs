@@ -739,10 +739,13 @@ function Library:SwitchTab(tab)
             local icon = CurrentTab.tabFrame:FindFirstChild("Tab_Icon")
             local text = icon and icon:FindFirstChild("Tab_Name")
             if icon and text then
-                local iconTween = createTween(icon, {
-                    ImageColor3 = Color3.fromRGB(58, 58, 58)
-                }, 0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-                iconTween:Play()
+                -- Only tween icon if it's visible (has an image)
+                if icon.Visible and icon.Image ~= "" then
+                    local iconTween = createTween(icon, {
+                        ImageColor3 = Color3.fromRGB(58, 58, 58)
+                    }, 0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+                    iconTween:Play()
+                end
                 
                 local textTween = createTween(text, {
                     TextColor3 = Color3.fromRGB(58, 58, 58)
@@ -827,11 +830,13 @@ function Library:SwitchTab(tab)
             icon.ImageColor3 = Color3.fromRGB(58, 58, 58)
             text.TextColor3 = Color3.fromRGB(58, 58, 58)
             
-            
-            local iconTween = createTween(icon, {
-                ImageColor3 = Library.Accent
-            }, 0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-            iconTween:Play()
+            -- Only tween icon if it's visible (has an image)
+            if icon.Visible and icon.Image ~= "" then
+                local iconTween = createTween(icon, {
+                    ImageColor3 = Library.Accent
+                }, 0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+                iconTween:Play()
+            end
             
             local textTween = createTween(text, {
                 TextColor3 = Library.Accent
