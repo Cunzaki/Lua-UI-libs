@@ -573,7 +573,7 @@ function Library:CreateTab(config)
     end
     
     local tab = {
-        icon = config.icon or "rbxassetid://133833791023200",
+        icon = config.icon,
         text = config.TabText or "Tab",
         sections = {left = {}, right = {}},
         components = {},
@@ -607,7 +607,7 @@ function Library:CreateTab(config)
     local tabIcon = Instance.new("ImageLabel")
     tabIcon.ImageColor3 = Color3.fromRGB(58, 58, 58) 
     tabIcon.ScaleType = Enum.ScaleType.Fit
-    tabIcon.Image = config.icon or "rbxassetid://133833791023200"
+    tabIcon.Image = config.icon or ""
     tabIcon.BackgroundTransparency = 1
     tabIcon.Size = UDim2.new(0, 20, 0, 20)
     tabIcon.Position = UDim2.new(0.25789472460746765, 0, 0.5, 0)
@@ -616,6 +616,7 @@ function Library:CreateTab(config)
     tabIcon.Name = "Tab_Icon"
     tabIcon.BorderSizePixel = 0
     tabIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    tabIcon.Visible = config.icon ~= nil
     tabIcon.Parent = tabFrame
     
     local tabName = Instance.new("TextLabel")
@@ -624,7 +625,8 @@ function Library:CreateTab(config)
     tabName.Text = config.TabText or "Tab"
     tabName.BackgroundTransparency = 1
     tabName.Size = UDim2.new(0, 1, 0, 1)
-    tabName.Position = UDim2.new(2.0999999046325684, 0, 0.4749999940395355, 0)
+    -- Adjust position based on whether icon is present
+    tabName.Position = config.icon and UDim2.new(2.0999999046325684, 0, 0.4749999940395355, 0) or UDim2.new(0.5, 0, 0.5, 0)
     tabName.AnchorPoint = Vector2.new(0.5, 0.5)
     tabName.AutomaticSize = Enum.AutomaticSize.XY
     tabName.TextSize = 18
@@ -632,7 +634,7 @@ function Library:CreateTab(config)
     tabName.Name = "Tab_Name"
     tabName.BorderSizePixel = 0
     tabName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    tabName.Parent = tabIcon
+    tabName.Parent = config.icon and tabIcon or tabFrame
 
     local tabButton = Instance.new("TextButton")
     tabButton.BackgroundTransparency = 1
