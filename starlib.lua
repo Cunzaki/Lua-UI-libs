@@ -1326,7 +1326,7 @@ function Library:CreateSlider(config, section)
     sliderName.TextColor3 = Color3.fromRGB(52, 52, 52)
     sliderName.Text = slider.text
     sliderName.Size = UDim2.new(0, 1, 0, 1)
-    sliderName.Position = UDim2.new(0.15100000351667404, 0, 0.2199999988079071, 0)
+    sliderName.Position = UDim2.new(0.2100000351667404, 0, 0.2199999988079071, 0)
     sliderName.AnchorPoint = Vector2.new(0.5, 0.5)
     sliderName.BackgroundTransparency = 1
     sliderName.AutomaticSize = Enum.AutomaticSize.XY
