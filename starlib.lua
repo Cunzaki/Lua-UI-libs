@@ -217,7 +217,8 @@ local Current_Tab_Icon = Instance.new("ImageLabel")
 Current_Tab_Icon.ImageColor3 = Color3.fromRGB(58, 58, 58)
 Current_Tab_Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Current_Tab_Icon.Name = "Current_Tab_Icon"
-Current_Tab_Icon.Image = "rbxassetid://74403797129667"
+Current_Tab_Icon.Image = ""
+Current_Tab_Icon.Visible = false
 Current_Tab_Icon.BackgroundTransparency = 1
 Current_Tab_Icon.Position = UDim2.new(0.031999967992305756, 0, 0.01890907995402813, 0)
 
@@ -752,11 +753,6 @@ function Library:SwitchTab(tab)
     end
     
     CurrentTab = tab
-    
-    -- Update Current_Tab_Icon to match the selected tab's icon
-    if Current_Tab_Icon and tab.icon then
-        Current_Tab_Icon.Image = tab.icon
-    end
     
    
     for _, section in pairs(tab.sections.left) do
@@ -3854,7 +3850,8 @@ UIPadding.Parent = Header
 Current_Tab_Icon.ImageColor3 = Color3.fromRGB(58, 58, 58)
 Current_Tab_Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Current_Tab_Icon.Name = "Current_Tab_Icon"
-Current_Tab_Icon.Image = "rbxassetid://74403797129667"
+Current_Tab_Icon.Image = ""
+Current_Tab_Icon.Visible = false
 Current_Tab_Icon.BackgroundTransparency = 1
 Current_Tab_Icon.Position = UDim2.new(0.031999967992305756, 0, 0.01890907995402813, 0)
 Current_Tab_Icon.Size = UDim2.new(0, 25, 0, 20)
