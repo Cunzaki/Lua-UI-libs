@@ -2,9 +2,13 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
+print("[UI LIB DEBUG] Starting ui lib.lua initialization...")
+
 local Library = {}
 Library.Accent = Color3.fromRGB(155, 77, 255)
 Library.AccentTransparent = Color3.fromRGB(155, 77, 255)
+
+print("[UI LIB DEBUG] Library table created successfully")
 local Windows = {}
 local CurrentWindow = nil
 local CurrentTab = nil
@@ -48,10 +52,12 @@ local function deepDeserialize(value)
     return out
 end
 
+print("[UI LIB DEBUG] Creating ScreenGui...")
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game:GetService("CoreGui")
+print("[UI LIB DEBUG] ScreenGui created and parented to CoreGui")
 
 ModalOverlay = Instance.new("TextButton")
 ModalOverlay.Name = "ModalOverlay"
@@ -286,6 +292,7 @@ end
 makeDraggable(MainFrame)
 
 function Library:CreateWindow(config)
+    print("[UI LIB DEBUG] CreateWindow called with config:", config and "provided" or "nil")
     local window = {
         config = config or {},
         tabs = {},
@@ -293,11 +300,15 @@ function Library:CreateWindow(config)
         sections = {left = {}, right = {}},
         configSection = nil
     }
+    print("[UI LIB DEBUG] Window object created successfully")
     
 
     if config.library_config and config.library_config.Cheat_Name then
+        print("[UI LIB DEBUG] Setting cheat name to:", config.library_config.Cheat_Name)
         Libary_Name.Text = config.library_config.Cheat_Name
         Library.CheatName = config.library_config.Cheat_Name
+    else
+        print("[UI LIB DEBUG] No cheat name provided, using default")
     end
     
     if config.library_config and config.library_config.Cheat_Icon then
@@ -463,6 +474,7 @@ function Library:CreateWindow(config)
     
     table.insert(Windows, window)
     CurrentWindow = window
+    print("[UI LIB DEBUG] Window creation completed successfully")
     
     return window
 end
@@ -568,6 +580,7 @@ function Library:SetAccentColor(color, alpha)
 end
 
 function Library:CreateTab(config)
+    print("[UI LIB DEBUG] CreateTab called with config:", config and config.TabText or "nil")
     if not CurrentWindow then
         error("No window created. Call CreateWindow first.")
         return
@@ -581,6 +594,7 @@ function Library:CreateTab(config)
         tabFrame = nil,
         tabContainer = nil
     }
+    print("[UI LIB DEBUG] Tab object created for:", config.TabText or "Tab")
     
     local tabContainer = Instance.new("Frame")
     tabContainer.Name = "Tab_Container"
@@ -644,6 +658,7 @@ function Library:CreateTab(config)
     tabButton.Parent = tabContainer
     
     tabButton.MouseButton1Click:Connect(function()
+        print("[UI LIB DEBUG] Tab button clicked:", config.TabText or "Tab")
         Library:SwitchTab(tab)
     end)
     
@@ -652,6 +667,7 @@ function Library:CreateTab(config)
     
     
     if #CurrentWindow.tabs == 0 then
+        print("[UI LIB DEBUG] First tab created, switching to it:", config.TabText or "Tab")
         Library:SwitchTab(tab)
     end
     
@@ -688,13 +704,16 @@ function Library:CreateTab(config)
     end
     
     table.insert(CurrentWindow.tabs, tab)
+    print("[UI LIB DEBUG] Tab creation completed for:", config.TabText or "Tab")
     return tab
 end
 
 function Library:SwitchTab(tab)
+    print("[UI LIB DEBUG] SwitchTab called for:", tab and tab.text or "nil")
     local isSameTab = CurrentTab == tab
     
     if CurrentTab and not isSameTab then
+        print("[UI LIB DEBUG] Hiding current tab sections")
         for _, section in pairs(CurrentTab.sections.left) do
             if section.frame then
                 local fadeOut = createTween(section.frame, {
@@ -875,6 +894,7 @@ function Library:SwitchTab(tab)
 end
 
 function Library:CreateSection(config, tab)
+    print("[UI LIB DEBUG] CreateSection called with text:", config and config.SectionText or "nil")
     tab = tab or CurrentTab
     if not tab then
         error("No tab created. Call CreateTab first.")
@@ -883,6 +903,7 @@ function Library:CreateSection(config, tab)
     
     local position = config.position or "left"
     local sectionText = config.SectionText or "Section"
+    print("[UI LIB DEBUG] Creating section:", sectionText, "at position:", position)
     
     local sideSections = tab.sections[position]
     if not sideSections then
@@ -3914,8 +3935,9 @@ MainFrame.Visible = true
 
     makeDraggable(MainFrame)
 
+    print("[UI LIB DEBUG] UI Library initialization completed successfully")
     
     end
 
-
+print("[UI LIB DEBUG] UI Library module loaded and ready to return")
 return Library
