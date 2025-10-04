@@ -436,8 +436,8 @@ function esp:update()
                 drawing.chams.ins.FillTransparency = esp[ flag .. 'chams'][4]
                 drawing.chams.ins.OutlineTransparency = 0 -- Always show outline
                 
-                -- Handle visible-only chams (index 5 is visible-only flag)
-                if esp[ flag .. 'chams'][5] then
+                -- Handle visible-only chams (index 6 is visible-only flag)
+                if esp[ flag .. 'chams'][6] then
                     drawing.chams.ins.DepthMode = Enum.HighlightDepthMode.Occluded
                 else
                     drawing.chams.ins.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
