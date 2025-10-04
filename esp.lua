@@ -23,7 +23,7 @@ local esp = {
 
     -- instances
     --\ @teammates
-    team_chams = { false, Color3.new(1, 1, 1), Color3.new(1, 1, 1), .25, .75, true },
+    team_chams = { false, Color3.new(1, 1, 1), Color3.new(1, 1, 1), .25, .75, false },
     --
     team_boxes = { false, Color3.new(), Color3.new(), 0.95 },
     team_healthbar = { false, Color3.new(), Color3.new() },
@@ -36,7 +36,7 @@ local esp = {
     team_health = false,
 
     --\ @enemies
-    enemy_chams = { false, Color3.new(1, 1, 1), Color3.new(1, 1, 1), .25, .75, true },
+    enemy_chams = { false, Color3.new(1, 1, 1), Color3.new(1, 1, 1), .25, .75, false },
     --
     enemy_boxes = { false, Color3.new(), Color3.new(), 0.95 },
     enemy_healthbar = { false, Color3.new(), Color3.new() },
@@ -310,7 +310,10 @@ function esp:update()
     _updating = true
     for plr, drawing in next, esp.players do
         local player = players:FindFirstChild(plr)
-        if not player then esp.players[plr] = nil continue end
+        if not player then 
+            esp.players[plr] = nil 
+            goto continue 
+        end
         if esp.enabled and esp.checkalive(player) then
             local character = esp.getcharacter(player)
             local playerName = LEN(plr) > esp.maxchar and esp.shortnames and SUB(plr, 0, esp.maxchar) .. '..' or plr
@@ -414,7 +417,7 @@ function esp:update()
             -- chams
             local isTargeted = false
             -- Check if this player is targeted by aimbot or silent aim
-            if TargetVisualsEnabled and (AimbotTarget == player or SilentAimTarget == player) then
+            if _G.TargetVisualsEnabled and _G.CurrentTarget and _G.CurrentTarget == player then
                 isTargeted = true
             end
             
@@ -424,8 +427,8 @@ function esp:update()
             if drawing.chams.ins.Enabled then
                 -- Use target visuals color if player is targeted, otherwise use normal colors
                 if isTargeted then
-                    drawing.chams.ins.FillColor = TargetVisualsColor
-                    drawing.chams.ins.OutlineColor = TargetVisualsColor
+                    drawing.chams.ins.FillColor = _G.TargetVisualsColor
+                    drawing.chams.ins.OutlineColor = _G.TargetVisualsColor
                 else
                     drawing.chams.ins.FillColor = esp[ flag .. 'chams'][2]
                     drawing.chams.ins.OutlineColor = esp[ flag .. 'chams'][3]
@@ -442,7 +445,7 @@ function esp:update()
             end;
 
             if not pass or (not onScreen) then
-                continue
+                goto continue
             end
 
             local smallestX, biggestX = math.huge, -math.huge
@@ -474,8 +477,8 @@ function esp:update()
             if drawing.box.Visible then
                 -- Use target visuals color if player is targeted, otherwise use normal color
                 if isTargeted then
-                    drawing.box.Color = TargetVisualsColor
-                    drawing.box_fill.Color = TargetVisualsColor
+                    drawing.box.Color = _G.TargetVisualsColor
+                drawing.box_fill.Color = _G.TargetVisualsColor
                 else
                     drawing.box.Color = esp[ flag .. 'boxes'][2]
                     drawing.box_fill.Color = esp[ flag .. 'boxes'][3]
@@ -534,7 +537,12 @@ function esp:update()
                 drawing.distance.Text = '['..distance..']'
                 drawing.distance.Font = Drawing.Fonts[esp.font]
                 drawing.distance.Size = esp.textsize
-                drawing.distance.Color = esp[ flag .. 'names'][2]
+                -- Use target visuals color if player is targeted, otherwise use normal color
+                if isTargeted then
+                    drawing.distance.Color = _G.TargetVisualsColor
+                else
+                    drawing.distance.Color = esp[ flag .. 'names'][2]
+                end
                 drawing.distance.Position = esp:floorvector(NEWVEC2(smallestX + (biggestX - smallestX) / 2 - (drawing.distance.TextBounds.X / 2), smallestY - drawing.distance.TextBounds.Y - 2))
                 drawing.distance.Transparency = transparency
                 drawing.distance_outline.Text = drawing.distance.Text
@@ -553,7 +561,7 @@ function esp:update()
                 drawing.name.Size = esp.textsize
                 -- Use target visuals color if player is targeted, otherwise use normal color
                 if isTargeted then
-                    drawing.name.Color = TargetVisualsColor
+                    drawing.name.Color = _G.TargetVisualsColor
                 else
                     drawing.name.Color = esp[ flag .. 'names'][2]
                 end
@@ -585,7 +593,12 @@ function esp:update()
                 drawing.weapon.Text = LOWER(character.EquippedTool.Value) or nil
                 drawing.weapon.Font = Drawing.Fonts[esp.font]
                 drawing.weapon.Size = esp.textsize
-                drawing.weapon.Color = esp[ flag .. 'weapon'][2]
+                -- Use target visuals color if player is targeted, otherwise use normal color
+                if isTargeted then
+                    drawing.weapon.Color = _G.TargetVisualsColor
+                else
+                    drawing.weapon.Color = esp[ flag .. 'weapon'][2]
+                end
                 drawing.weapon.Position = esp:floorvector(NEWVEC2(smallestX + (biggestX - smallestX) / 2 - (drawing.weapon.TextBounds.X / 2), biggestY + 4))
                 drawing.weapon.Transparency = transparency
                 drawing.weapon_outline.Text = drawing.weapon.Text
@@ -597,6 +610,7 @@ function esp:update()
         else
             esp:disable(player)
         end
+        ::continue::
     end
     _updating = false
 end
