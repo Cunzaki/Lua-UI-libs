@@ -438,9 +438,9 @@ function esp:update()
                 
                 -- Handle visible-only chams (index 6 is visible-only flag)
                 if esp[ flag .. 'chams'][6] then
-                    drawing.chams.ins.DepthMode = Enum.HighlightDepthMode.Occluded
+                    drawing.chams.ins.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- Visible only (occluded parts hidden)
                 else
-                    drawing.chams.ins.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                    drawing.chams.ins.DepthMode = Enum.HighlightDepthMode.Occluded -- Through walls (always visible)
                 end
             end;
 
