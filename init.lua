@@ -14517,6 +14517,13 @@ function Xan:CreateWindow(config)
             
             registerSearchElement(name, tabName, tabData, "Slider", tabIcon, sliderFrame)
             
+            -- Sync slider UI when its flag changes programmatically (e.g., config load)
+            if flag then
+                Xan:OnFlagChanged(flag, function(val)
+                    updateSlider(val, true)
+                end)
+            end
+            
             return {
                 Frame = sliderFrame,
                 Value = function() return value end,
@@ -14902,6 +14909,24 @@ function Xan:CreateWindow(config)
             Xan:OnThemeChanged(applyDropdownTheme)
             
             registerSearchElement(name, tabName, tabData, "Dropdown", tabIcon, dropdownFrame)
+            
+            -- Sync dropdown UI when its flag changes programmatically (e.g., config load)
+            if flag then
+                Xan:OnFlagChanged(flag, function(val)
+                    local skipCallback = true
+                    if multi and type(val) == "table" then
+                        selected = {}
+                        for _, v in ipairs(val) do
+                            selected[v] = true
+                        end
+                    else
+                        selected = val
+                    end
+                    valueLabel.Text = getDisplayText()
+                    updateOptions()
+                    -- Do not call callback; only mirror UI state
+                end)
+            end
             
             return {
                 Frame = dropdownFrame,
