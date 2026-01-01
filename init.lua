@@ -15447,6 +15447,14 @@ function Xan:CreateWindow(config)
             end
             Xan:OnThemeChanged(applyColorPickerTheme)
             
+            -- Sync UI when flag changes
+            if flag then
+                Xan:OnFlagChanged(flag, function(val)
+                    local newH, newS, newV = Color3.toHSV(val)
+                    updateColor(newH, newS, newV, true)
+                end)
+            end
+
             registerSearchElement(name, tabName, tabData, "ColorPicker", tabIcon, colorFrame)
             
             return {
