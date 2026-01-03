@@ -55,6 +55,7 @@ local ZIndex = {
 }
 
 
+--[[
 if getgenv().XanBarInstance then
     pcall(function()
         for _, window in pairs(getgenv().XanBarInstance.Windows or {}) do
@@ -88,6 +89,7 @@ if getgenv().XanBarInstance then
         end
     end)
 end
+]]
 
 local Xan = {
     Version = "2.0.0",
