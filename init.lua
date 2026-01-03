@@ -4689,6 +4689,10 @@ Xan.WindowBuilders = WindowBuilders
 function Xan:CreateWindow(config)
     config = config or {}
     
+    if config.Key then
+        self.ToggleKey = config.Key
+    end
+    
     local requestedLayout = config.Layout or "Auto"
     local forceDesktop = config.ForceDesktop == true
     
