@@ -10772,6 +10772,19 @@ function Xan:CreateWindow(config)
     window.CloseSearch = closeSearch
     window.RegisterSearchElement = registerSearchElement
     window.RegisterSearchGame = registerSearchGame
+
+    window.SetStreamerMode = function(enabled, spoofName)
+        if userFrame then
+            local usernameLabel = userFrame:FindFirstChild("Username")
+            if usernameLabel then
+                if enabled then
+                    usernameLabel.Text = spoofName or "Streamer Mode"
+                else
+                    usernameLabel.Text = userName
+                end
+            end
+        end
+    end
     
     if topbar then
         Util.MakeDraggable(mainFrame, topbar)
