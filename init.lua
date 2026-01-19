@@ -2982,6 +2982,10 @@ function Components.Dropdown(config)
         expandedHeight = headerHeight + newOptionsListHeight + 4
         
         createOptions()
+        
+        if expanded and not floating then
+            Util.Tween(dropdownFrame, 0.25, { Size = width and UDim2.new(0, width, 0, expandedHeight) or UDim2.new(1, 0, 0, expandedHeight) })
+        end
     end
     
     function dropdown:UpdateTheme()
