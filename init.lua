@@ -10772,6 +10772,19 @@ function Xan:CreateWindow(config)
     window.CloseSearch = closeSearch
     window.RegisterSearchElement = registerSearchElement
     window.RegisterSearchGame = registerSearchGame
+
+    window.SetStreamerMode = function(enabled, spoofName)
+        if userFrame then
+            local usernameLabel = userFrame:FindFirstChild("Username")
+            if usernameLabel then
+                if enabled then
+                    usernameLabel.Text = spoofName or "Streamer Mode"
+                else
+                    usernameLabel.Text = userName
+                end
+            end
+        end
+    end
     
     if topbar then
         Util.MakeDraggable(mainFrame, topbar)
@@ -14786,9 +14799,6 @@ function Xan:CreateWindow(config)
             local optionButtons = {}
             
             local function updateOptions()
-                optionsListHeight = #options * optionHeight + math.max(0, #options - 1) * spacing
-                optionsList.Size = UDim2.new(1, -16, 0, optionsListHeight)
-
                 for _, btn in pairs(optionButtons) do
                     btn:Destroy()
                 end
@@ -14862,14 +14872,6 @@ function Xan:CreateWindow(config)
                     end)
                     
                     table.insert(optionButtons, optionBtn)
-                end
-
-                if expanded then
-                    local totalHeight = optionsListHeight + 12
-                    local baseHeight = IsMobile and 52 or 44
-                    Util.Tween(dropdownFrame, 0.3, {
-                        Size = UDim2.new(1, 0, 0, baseHeight + totalHeight)
-                    }, Enum.EasingStyle.Quint)
                 end
             end
             
