@@ -2988,6 +2988,13 @@ function Components.Dropdown(config)
         if expanded and not floating then
             -- Force size update immediately without tween if refreshing
             dropdownFrame.Size = width and UDim2.new(0, width, 0, expandedHeight) or UDim2.new(1, 0, 0, expandedHeight)
+            
+            -- Ensure list layout updates
+            local layout = optionsList:FindFirstChildOfClass("UIListLayout")
+            if layout then
+                layout:ApplyLayout()
+            end
+            
             -- Force visible to fix layout issues
             optionsList.Visible = true
         end
