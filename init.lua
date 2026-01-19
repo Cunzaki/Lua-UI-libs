@@ -2979,12 +2979,15 @@ function Components.Dropdown(config)
         else
             optionsList.Size = UDim2.new(1, -12, 0, newOptionsListHeight)
         end
+        
+        -- Update expandedHeight variable in the closure
         expandedHeight = headerHeight + newOptionsListHeight + 4
         
         createOptions()
         
         if expanded and not floating then
-            Util.Tween(dropdownFrame, 0.25, { Size = width and UDim2.new(0, width, 0, expandedHeight) or UDim2.new(1, 0, 0, expandedHeight) })
+            -- Force size update immediately without tween if refreshing
+            dropdownFrame.Size = width and UDim2.new(0, width, 0, expandedHeight) or UDim2.new(1, 0, 0, expandedHeight)
         end
     end
     
