@@ -10,6 +10,8 @@
     
     -- Demo window: UI.Demo()
     -- Schema builder: UI.Build({ Title = "Hub", Tabs = {...} })
+    You must use 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Cunzaki/Lua-UI-libs/refs/heads/main/init.lua"))()
 ]]
 
 
@@ -10772,19 +10774,6 @@ function Xan:CreateWindow(config)
     window.CloseSearch = closeSearch
     window.RegisterSearchElement = registerSearchElement
     window.RegisterSearchGame = registerSearchGame
-
-    window.SetStreamerMode = function(enabled, spoofName)
-        if userFrame then
-            local usernameLabel = userFrame:FindFirstChild("Username")
-            if usernameLabel then
-                if enabled then
-                    usernameLabel.Text = spoofName or "Streamer Mode"
-                else
-                    usernameLabel.Text = userName
-                end
-            end
-        end
-    end
     
     if topbar then
         Util.MakeDraggable(mainFrame, topbar)
@@ -14799,7 +14788,18 @@ function Xan:CreateWindow(config)
             local optionButtons = {}
             
             local function updateOptions()
-                optionsListHeight = #options * optionHeight + math.max(0, #options - 1) * spacing
+                optionsListHeight = 0
+                for _, opt in ipairs(options) do
+                    if type(opt) == "table" and opt.Type == "Section" then
+                        optionsListHeight = optionsListHeight + (IsMobile and 28 or 24) + spacing
+                    else
+                        optionsListHeight = optionsListHeight + optionHeight + spacing
+                    end
+                end
+                if #options > 0 then
+                    optionsListHeight = optionsListHeight - spacing
+                end
+
                 optionsList.Size = UDim2.new(1, -16, 0, optionsListHeight)
 
                 for _, btn in pairs(optionButtons) do
@@ -14808,73 +14808,93 @@ function Xan:CreateWindow(config)
                 optionButtons = {}
                 
                 for i, option in ipairs(options) do
-                    local isSelected = multi and selected[option] or selected == option
-                    local currentTheme = Xan.CurrentTheme
-                    local selectedTextColor = Util.GetContrastText(Xan.CurrentTheme.Accent)
-                    local dropdownColor = Xan.CurrentTheme.Dropdown or Xan.CurrentTheme.Input or Color3.fromRGB(25, 25, 32)
-                    
-                    local optionBtn = Util.Create("TextButton", {
-                        Name = option,
-                        BackgroundColor3 = isSelected and Xan.CurrentTheme.Accent or dropdownColor,
-                        Size = UDim2.new(1, 0, 0, IsMobile and 36 or 32),
-                        Font = Enum.Font.GothamMedium,
-                        Text = option,
-                        TextColor3 = isSelected and selectedTextColor or Xan.CurrentTheme.Text,
-                        TextSize = IsMobile and 15 or 14,
-                        AutoButtonColor = false,
-                        LayoutOrder = i,
-                        Parent = optionsList
-                    }, {
-                        Util.Create("UICorner", { CornerRadius = UDim.new(0, 6) })
-                    })
-                    
-                    optionBtn.MouseEnter:Connect(function()
-                        if not (multi and selected[option] or selected == option) then
-                            local hoverColor = Xan.CurrentTheme.DropdownHover or Xan.CurrentTheme.CardHover or Color3.fromRGB(35, 35, 45)
-                            Util.Tween(optionBtn, 0.15, { BackgroundColor3 = hoverColor })
-                        end
-                    end)
-                    
-                    optionBtn.MouseLeave:Connect(function()
-                        local isCurrentlySelected = multi and selected[option] or selected == option
-                        local dropdownColor = Xan.CurrentTheme.Dropdown or Xan.CurrentTheme.Input or Color3.fromRGB(25, 25, 32)
-                        Util.Tween(optionBtn, 0.15, { 
-                            BackgroundColor3 = isCurrentlySelected and Xan.CurrentTheme.Accent or dropdownColor 
+                    if type(option) == "table" and option.Type == "Section" then
+                        local header = Util.Create("TextLabel", {
+                            Name = "Header_" .. option.Name,
+                            BackgroundTransparency = 1,
+                            Size = UDim2.new(1, 0, 0, IsMobile and 28 or 24),
+                            Font = Enum.Font.GothamBold,
+                            Text = option.Name,
+                            TextColor3 = Xan.CurrentTheme.TextDim,
+                            TextSize = IsMobile and 13 or 12,
+                            TextXAlignment = Enum.TextXAlignment.Left,
+                            LayoutOrder = i,
+                            Parent = optionsList
+                        }, {
+                            Util.Create("UIPadding", { PaddingLeft = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4) })
                         })
-                    end)
-                    
-                    optionBtn.MouseButton1Click:Connect(function()
-                        local contrastText = Util.GetContrastText(Xan.CurrentTheme.Accent)
+                        table.insert(optionButtons, header)
+                    else
+                        local isSelected = multi and selected[option] or selected == option
+                        local currentTheme = Xan.CurrentTheme
+                        local selectedTextColor = Util.GetContrastText(Xan.CurrentTheme.Accent)
                         local dropdownColor = Xan.CurrentTheme.Dropdown or Xan.CurrentTheme.Input or Color3.fromRGB(25, 25, 32)
-                        if multi then
-                            selected[option] = not selected[option]
-                            local isNowSelected = selected[option]
-                            Util.Tween(optionBtn, 0.2, {
-                                BackgroundColor3 = isNowSelected and Xan.CurrentTheme.Accent or dropdownColor,
-                                TextColor3 = isNowSelected and contrastText or Xan.CurrentTheme.Text
+                        
+                        local optionBtn = Util.Create("TextButton", {
+                            Name = option,
+                            BackgroundColor3 = isSelected and Xan.CurrentTheme.Accent or dropdownColor,
+                            Size = UDim2.new(1, 0, 0, IsMobile and 36 or 32),
+                            Font = Enum.Font.GothamMedium,
+                            Text = option,
+                            TextColor3 = isSelected and selectedTextColor or Xan.CurrentTheme.Text,
+                            TextSize = IsMobile and 15 or 14,
+                            AutoButtonColor = false,
+                            LayoutOrder = i,
+                            Parent = optionsList
+                        }, {
+                            Util.Create("UICorner", { CornerRadius = UDim.new(0, 6) })
+                        })
+                        
+                        optionBtn.MouseEnter:Connect(function()
+                            if not (multi and selected[option] or selected == option) then
+                                local hoverColor = Xan.CurrentTheme.DropdownHover or Xan.CurrentTheme.CardHover or Color3.fromRGB(35, 35, 45)
+                                Util.Tween(optionBtn, 0.15, { BackgroundColor3 = hoverColor })
+                            end
+                        end)
+                        
+                        optionBtn.MouseLeave:Connect(function()
+                            local isCurrentlySelected = multi and selected[option] or selected == option
+                            local dropdownColor = Xan.CurrentTheme.Dropdown or Xan.CurrentTheme.Input or Color3.fromRGB(25, 25, 32)
+                            Util.Tween(optionBtn, 0.15, { 
+                                BackgroundColor3 = isCurrentlySelected and Xan.CurrentTheme.Accent or dropdownColor 
                             })
-                        else
-                            for _, btn in pairs(optionButtons) do
-                                Util.Tween(btn, 0.2, {
-                                    BackgroundColor3 = dropdownColor,
-                                    TextColor3 = Xan.CurrentTheme.Text
+                        end)
+                        
+                        optionBtn.MouseButton1Click:Connect(function()
+                            local contrastText = Util.GetContrastText(Xan.CurrentTheme.Accent)
+                            local dropdownColor = Xan.CurrentTheme.Dropdown or Xan.CurrentTheme.Input or Color3.fromRGB(25, 25, 32)
+                            if multi then
+                                selected[option] = not selected[option]
+                                local isNowSelected = selected[option]
+                                Util.Tween(optionBtn, 0.2, {
+                                    BackgroundColor3 = isNowSelected and Xan.CurrentTheme.Accent or dropdownColor,
+                                    TextColor3 = isNowSelected and contrastText or Xan.CurrentTheme.Text
+                                })
+                            else
+                                for _, btn in pairs(optionButtons) do
+                                    if btn:IsA("TextButton") then
+                                        Util.Tween(btn, 0.2, {
+                                            BackgroundColor3 = dropdownColor,
+                                            TextColor3 = Xan.CurrentTheme.Text
+                                        })
+                                    end
+                                end
+                                selected = option
+                                Util.Tween(optionBtn, 0.2, {
+                                    BackgroundColor3 = Xan.CurrentTheme.Accent,
+                                    TextColor3 = contrastText
                                 })
                             end
-                            selected = option
-                            Util.Tween(optionBtn, 0.2, {
-                                BackgroundColor3 = Xan.CurrentTheme.Accent,
-                                TextColor3 = contrastText
-                            })
-                        end
+                            
+                            valueLabel.Text = getDisplayText()
+                            if flag then
+                                Xan:SetFlag(flag, selected)
+                            end
+                            callback(selected)
+                        end)
                         
-                        valueLabel.Text = getDisplayText()
-                        if flag then
-                            Xan:SetFlag(flag, selected)
-                        end
-                        callback(selected)
-                    end)
-                    
-                    table.insert(optionButtons, optionBtn)
+                        table.insert(optionButtons, optionBtn)
+                    end
                 end
 
                 if expanded then
