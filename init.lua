@@ -11594,84 +11594,80 @@ function Xan:CreateWindow(config)
     if minIconCloseBtn then minIconCloseBtn.MouseButton1Click:Connect(doClose) end
     
     if not hasSidebar and traditionalTopbar then
-        (function()
-            local tradControls = traditionalTopbar:FindFirstChild("Controls")
-            if tradControls then
-                local tradMinBtn = tradControls:FindFirstChild("Minimize")
-                local tradCloseBtn = tradControls:FindFirstChild("Close")
-                local tradSettingsBtn = tradControls:FindFirstChild("Settings")
-                
-                if tradMinBtn then
-                    tradMinBtn.MouseButton1Click:Connect(handleMinimizeClick)
-                    tradMinBtn.MouseEnter:Connect(function()
-                        Util.Tween(tradMinBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Xan.CurrentTheme.Text })
-                    end)
-                    tradMinBtn.MouseLeave:Connect(function()
-                        Util.Tween(tradMinBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
-                    end)
-                end
-                
-                if tradCloseBtn then
-                    tradCloseBtn.MouseButton1Click:Connect(doClose)
-                    tradCloseBtn.MouseEnter:Connect(function()
-                        Util.Tween(tradCloseBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Color3.fromRGB(220, 60, 60) })
-                    end)
-                    tradCloseBtn.MouseLeave:Connect(function()
-                        Util.Tween(tradCloseBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
-                    end)
-                end
-                
-                if tradSettingsBtn then
-                    tradSettingsBtn.Visible = showSettings
-                    tradSettingsBtn.MouseButton1Click:Connect(function()
-                        if settingsOpen then
-                            closeSettings()
-                        else
-                            openSettings()
-                        end
-                    end)
-                    tradSettingsBtn.MouseEnter:Connect(function()
-                        Util.Tween(tradSettingsBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Xan.CurrentTheme.Accent })
-                    end)
-                    tradSettingsBtn.MouseLeave:Connect(function()
-                        Util.Tween(tradSettingsBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
-                    end)
-                end
+        local tradControls = traditionalTopbar:FindFirstChild("Controls")
+        if tradControls then
+            local tradMinBtn = tradControls:FindFirstChild("Minimize")
+            local tradCloseBtn = tradControls:FindFirstChild("Close")
+            local tradSettingsBtn = tradControls:FindFirstChild("Settings")
+            
+            if tradMinBtn then
+                tradMinBtn.MouseButton1Click:Connect(handleMinimizeClick)
+                tradMinBtn.MouseEnter:Connect(function()
+                    Util.Tween(tradMinBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Xan.CurrentTheme.Text })
+                end)
+                tradMinBtn.MouseLeave:Connect(function()
+                    Util.Tween(tradMinBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
+                end)
             end
-        end)()
+            
+            if tradCloseBtn then
+                tradCloseBtn.MouseButton1Click:Connect(doClose)
+                tradCloseBtn.MouseEnter:Connect(function()
+                    Util.Tween(tradCloseBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Color3.fromRGB(220, 60, 60) })
+                end)
+                tradCloseBtn.MouseLeave:Connect(function()
+                    Util.Tween(tradCloseBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
+                end)
+            end
+            
+            if tradSettingsBtn then
+                tradSettingsBtn.Visible = showSettings
+                tradSettingsBtn.MouseButton1Click:Connect(function()
+                    if settingsOpen then
+                        closeSettings()
+                    else
+                        openSettings()
+                    end
+                end)
+                tradSettingsBtn.MouseEnter:Connect(function()
+                    Util.Tween(tradSettingsBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Xan.CurrentTheme.Accent })
+                end)
+                tradSettingsBtn.MouseLeave:Connect(function()
+                    Util.Tween(tradSettingsBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
+                end)
+            end
+        end
     end
     
     if not hasSidebar and not traditionalTopbar then
-        (function()
-            local compTopbar = guiObjects.CompactTopbar
-            if compTopbar then
-                local compControls = compTopbar:FindFirstChild("Controls")
-                if compControls then
-                    local compMinBtn = compControls:FindFirstChild("Minimize")
-                    local compCloseBtn = compControls:FindFirstChild("Close")
-                    
-                    if compMinBtn then
-                        compMinBtn.MouseButton1Click:Connect(handleMinimizeClick)
-                        compMinBtn.MouseEnter:Connect(function()
-                            Util.Tween(compMinBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Xan.CurrentTheme.Text })
-                        end)
-                        compMinBtn.MouseLeave:Connect(function()
-                            Util.Tween(compMinBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
-                        end)
-                    end
-                    
-                    if compCloseBtn then
-                        compCloseBtn.MouseButton1Click:Connect(doClose)
-                        compCloseBtn.MouseEnter:Connect(function()
-                            Util.Tween(compCloseBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Color3.fromRGB(220, 60, 60) })
-                        end)
-                        compCloseBtn.MouseLeave:Connect(function()
-                            Util.Tween(compCloseBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
-                        end)
-                    end
+        local compTopbar = guiObjects.CompactTopbar
+        if compTopbar then
+            local compControls = compTopbar:FindFirstChild("Controls")
+            if compControls then
+                local compMinBtn = compControls:FindFirstChild("Minimize")
+                local compCloseBtn = compControls:FindFirstChild("Close")
+                
+                if compMinBtn then
+                    compMinBtn.MouseButton1Click:Connect(handleMinimizeClick)
+                    compMinBtn.MouseEnter:Connect(function()
+                        Util.Tween(compMinBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Xan.CurrentTheme.Text })
+                    end)
+                    compMinBtn.MouseLeave:Connect(function()
+                        Util.Tween(compMinBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
+                    end)
+                end
+                
+                if compCloseBtn then
+                    compCloseBtn.MouseButton1Click:Connect(doClose)
+                    compCloseBtn.MouseEnter:Connect(function()
+                        Util.Tween(compCloseBtn, 0.2, { ImageTransparency = 0, ImageColor3 = Color3.fromRGB(220, 60, 60) })
+                    end)
+                    compCloseBtn.MouseLeave:Connect(function()
+                        Util.Tween(compCloseBtn, 0.2, { ImageTransparency = 0.2, ImageColor3 = Xan.CurrentTheme.TextDim })
+                    end)
                 end
             end
-        end)()
+        end
     end
     
     if searchBtn then
