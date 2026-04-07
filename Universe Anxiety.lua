@@ -1192,7 +1192,7 @@ end
                             Position = UDim2.new(0, 6, 0, 0),
                             Size = UDim2.new(0, 250, 1, 0),
                             Font = Enum.Font.Ubuntu,
-                            Text = value.Dropdown,
+                            Text = value.Dropdown or "",
                             TextColor3 = Color3.fromRGB(150, 150, 150),
                             TextSize = 14,
                             TextXAlignment = Enum.TextXAlignment.Left,
@@ -1290,7 +1290,7 @@ end
                             value = new_value and new_value or value
                             menu.values[tab.tab_num][section_name][sector_name][flag] = value
 
-                            DropdownButtonText.Text = new_value.Dropdown
+                            DropdownButtonText.Text = new_value.Dropdown or ""
 
                             if cb == nil or not cb then
                                 do_callback()
