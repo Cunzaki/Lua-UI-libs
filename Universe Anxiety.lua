@@ -2497,20 +2497,22 @@ end
                             BorderSizePixel = 0,
                         }, LineFrame)
 
-                        local Handle1 = library:create("Frame", {
+                        local Handle1 = library:create("TextButton", {
                             Name = "Handle1",
                             BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(value.BezierCurve[1], 0, 1 - value.BezierCurve[2], 0),
                             Size = UDim2.new(0, 10, 0, 10),
+                            Text = ""
                         }, LineFrame)
 
-                        local Handle2 = library:create("Frame", {
+                        local Handle2 = library:create("TextButton", {
                             Name = "Handle2",
                             BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(value.BezierCurve[3], 0, 1 - value.BezierCurve[4], 0),
                             Size = UDim2.new(0, 10, 0, 10),
+                            Text = ""
                         }, LineFrame)
 
                         local corner1 = library:create("UICorner", {CornerRadius = UDim.new(1, 0)}, Handle1)
