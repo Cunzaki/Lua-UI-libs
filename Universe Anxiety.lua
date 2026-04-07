@@ -2186,7 +2186,7 @@ end
 
                         local options = {}
                         for _, v in ipairs(data.options) do
-                            if type(v) == "string" then
+                            if typeof(v) == "string" then
                                 table.insert(options, v)
                                 DropdownScroll.CanvasSize = DropdownScroll.CanvasSize + UDim2.new(0, 0, 0, 20)
                             end
@@ -2199,7 +2199,7 @@ end
                             options = {}
                             DropdownScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
                             for _, v in ipairs(opts) do
-                                if type(v) == "string" then
+                                if typeof(v) == "string" then
                                     table.insert(options, v)
                                     DropdownScroll.CanvasSize = DropdownScroll.CanvasSize + UDim2.new(0, 0, 0, 20)
                                 end
