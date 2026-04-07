@@ -43,56 +43,121 @@ library.Icons = {
     Settings = "http://www.roblox.com/asset/?id=7300489566",
 }
 
+local notification_gui
 function library:Notify(data)
     if not data then return end
-    local notifGui = ScreenGui:FindFirstChild("Notifications")
-    if not notifGui then
-        notifGui = library:create("Frame", {
-            Name = "Notifications",
+    
+    if not notification_gui then
+        notification_gui = library:create("ScreenGui", {
+            Name = "Anxiety_Notifications",
+            ZIndexBehavior = Enum.ZIndexBehavior.Global,
+            IgnoreGuiInset = true,
+        })
+        
+        if gethui then
+            notification_gui.Parent = gethui()
+        elseif syn and syn.protect_gui then
+            syn.protect_gui(notification_gui)
+            notification_gui.Parent = game:GetService("CoreGui")
+        else
+            notification_gui.Parent = game:GetService("CoreGui")
+        end
+
+        library:create("Frame", {
+            Name = "Container",
             BackgroundTransparency = 1,
-            Position = UDim2.new(0, 0, 0, 0),
-            Size = UDim2.new(0, 300, 0, 200),
-        }, ScreenGui)
+            Position = UDim2.new(1, -320, 1, -300),
+            Size = UDim2.new(0, 300, 0, 280),
+            Parent = notification_gui
+        })
+
+        library:create("UIListLayout", {
+            Padding = UDim.new(0, 10),
+            HorizontalAlignment = Enum.HorizontalAlignment.Right,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            VerticalAlignment = Enum.VerticalAlignment.Bottom,
+            Parent = notification_gui.Container
+        })
     end
     
+    local container = notification_gui.Container
+
     local notifFrame = library:create("Frame", {
         BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-        BorderColor3 = Color3.fromRGB(78, 93, 234),
-        Position = UDim2.new(0, 10, 0, 10),
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
         Size = UDim2.new(0, 280, 0, 50),
-    }, notifGui)
+        BackgroundTransparency = 1,
+    }, container)
     
-    local corner = library:create("UICorner", {CornerRadius = UDim.new(0, 6)}, notifFrame)
+    local border = library:create("UIStroke", {
+        Color = Color3.fromRGB(0, 0, 0),
+        Thickness = 1,
+        Transparency = 1,
+    }, notifFrame)
+
+    local inline = library:create("UIStroke", {
+        Color = Color3.fromRGB(30, 30, 30),
+        Thickness = 1,
+        Transparency = 1,
+    }, library:create("Frame", {
+        BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+        BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+    }, notifFrame))
+    
+    local accent = library:create("Frame", {
+        BackgroundColor3 = Color3.fromRGB(79, 95, 239),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, 0, 0, 0),
+        Size = UDim2.new(1, 0, 0, 1),
+        BackgroundTransparency = 1,
+    }, inline.Parent)
     
     local title = library:create("TextLabel", {
         BackgroundTransparency = 1,
-        Position = UDim2.new(0, 10, 0, 5),
-        Size = UDim2.new(1, -20, 0, 20),
+        Position = UDim2.new(0, 8, 0, 5),
+        Size = UDim2.new(1, -16, 0, 15),
         Font = Enum.Font.Ubuntu,
         Text = data.Title or "Notification",
         TextColor3 = Color3.fromRGB(255, 255, 255),
         TextSize = 14,
         TextXAlignment = Enum.TextXAlignment.Left,
+        TextTransparency = 1,
     }, notifFrame)
     
     local content = library:create("TextLabel", {
         BackgroundTransparency = 1,
-        Position = UDim2.new(0, 10, 0, 25),
-        Size = UDim2.new(1, -20, 0, 20),
+        Position = UDim2.new(0, 8, 0, 22),
+        Size = UDim2.new(1, -16, 0, 20),
         Font = Enum.Font.Ubuntu,
         Text = data.Content or "",
         TextColor3 = Color3.fromRGB(150, 150, 150),
-        TextSize = 12,
+        TextSize = 13,
         TextXAlignment = Enum.TextXAlignment.Left,
+        TextWrapped = true,
+        TextTransparency = 1,
     }, notifFrame)
-    
-    rs.RenderStepped:Connect(function()
-        notifFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    end)
-    
+
+    -- Fade in
+    library:tween(notifFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0})
+    library:tween(inline.Parent, TweenInfo.new(0.3), {BackgroundTransparency = 0})
+    library:tween(border, TweenInfo.new(0.3), {Transparency = 0})
+    library:tween(inline, TweenInfo.new(0.3), {Transparency = 0})
+    library:tween(accent, TweenInfo.new(0.3), {BackgroundTransparency = 0})
+    library:tween(title, TweenInfo.new(0.3), {TextTransparency = 0})
+    library:tween(content, TweenInfo.new(0.3), {TextTransparency = 0})
+
     task.spawn(function()
-        task.wait(3)
+        task.wait(data.Duration or 3)
+        -- Fade out
         library:tween(notifFrame, TweenInfo.new(0.3), {BackgroundTransparency = 1})
+        library:tween(inline.Parent, TweenInfo.new(0.3), {BackgroundTransparency = 1})
+        library:tween(border, TweenInfo.new(0.3), {Transparency = 1})
+        library:tween(inline, TweenInfo.new(0.3), {Transparency = 1})
+        library:tween(accent, TweenInfo.new(0.3), {BackgroundTransparency = 1})
+        library:tween(title, TweenInfo.new(0.3), {TextTransparency = 1})
+        library:tween(content, TweenInfo.new(0.3), {TextTransparency = 1})
         task.wait(0.3)
         notifFrame:Destroy()
     end)
@@ -450,31 +515,49 @@ end
                 Visible = false,
             }, TabFrames)
 
-            local Left = library:create("Frame", {
+            local Left = library:create("ScrollingFrame", {
                 Name = "Left",
+                Active = true,
                 BackgroundTransparency = 1,
                 Position = UDim2.new(0, 8, 0, 14),
                 Size = UDim2.new(0, 282, 0, 395),
+                CanvasSize = UDim2.new(0, 0, 0, 0),
+                ScrollBarThickness = 2,
+                ScrollBarImageColor3 = Color3.fromRGB(79, 95, 239),
+                BorderSizePixel = 0,
             }, SectionFrame)
 
-            local UIListLayout = library:create("UIListLayout", {
+            local LeftLayout = library:create("UIListLayout", {
                 HorizontalAlignment = Enum.HorizontalAlignment.Center,
                 SortOrder = Enum.SortOrder.LayoutOrder,
                 Padding = UDim.new(0, 12),
             }, Left)
+            
+            LeftLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                Left.CanvasSize = UDim2.new(0, 0, 0, LeftLayout.AbsoluteContentSize.Y + 20)
+            end)
 
-            local Right = library:create("Frame", {
+            local Right = library:create("ScrollingFrame", {
                 Name = "Right",
+                Active = true,
                 BackgroundTransparency = 1,
                 Position = UDim2.new(0, 298, 0, 14),
                 Size = UDim2.new(0, 282, 0, 395),
+                CanvasSize = UDim2.new(0, 0, 0, 0),
+                ScrollBarThickness = 2,
+                ScrollBarImageColor3 = Color3.fromRGB(79, 95, 239),
+                BorderSizePixel = 0,
             }, SectionFrame)
 
-            local UIListLayout = library:create("UIListLayout", {
+            local RightLayout = library:create("UIListLayout", {
                 HorizontalAlignment = Enum.HorizontalAlignment.Center,
                 SortOrder = Enum.SortOrder.LayoutOrder,
                 Padding = UDim.new(0, 12),
             }, Right)
+            
+            RightLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                Right.CanvasSize = UDim2.new(0, 0, 0, RightLayout.AbsoluteContentSize.Y + 20)
+            end)
 
             SectionButton.MouseButton1Down:Connect(function()
                 for _,SectionButtons in pairs (TabSections:GetChildren()) do
@@ -2099,7 +2182,7 @@ end
                     elseif type == "MultiDropdown" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 50)
 
-                        value = {MultiDropdown = {}}
+                        value = {MultiDropdown = default and default.MultiDropdown or {}}
 
                         local Dropdown = library:create("Frame", {
                             Name = "MultiDropdown",
