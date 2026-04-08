@@ -659,7 +659,12 @@ end
                         callback(value)
                     end
 
-                    local default = data.default and data.default
+                    local default = nil
+                    if data and typeof(data) == "table" then
+                        default = data.default
+                    elseif data and typeof(data) == "Color3" then
+                        default = data
+                    end
 
                     local element = {}
 
