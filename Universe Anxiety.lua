@@ -294,7 +294,7 @@ function library.new(library_title, cfg_location)
     end
 
     uis.InputBegan:Connect(function(key)
-        if key.KeyCode ~= Enum.KeyCode.Insert then return end
+        if key.KeyCode ~= Enum.KeyCode.RightShift then return end
 
 		ScreenGui.Enabled = not ScreenGui.Enabled
         menu.open = ScreenGui.Enabled
@@ -525,12 +525,18 @@ end
                 ScrollBarThickness = 2,
                 ScrollBarImageColor3 = Color3.fromRGB(79, 95, 239),
                 BorderSizePixel = 0,
+                ClipsDescendants = false,
             }, SectionFrame)
 
             local LeftLayout = library:create("UIListLayout", {
                 HorizontalAlignment = Enum.HorizontalAlignment.Center,
                 SortOrder = Enum.SortOrder.LayoutOrder,
                 Padding = UDim.new(0, 12),
+            }, Left)
+            
+            local LeftPadding = library:create("UIPadding", {
+                PaddingTop = UDim.new(0, 10),
+                PaddingBottom = UDim.new(0, 10),
             }, Left)
             
             LeftLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -547,12 +553,18 @@ end
                 ScrollBarThickness = 2,
                 ScrollBarImageColor3 = Color3.fromRGB(79, 95, 239),
                 BorderSizePixel = 0,
+                ClipsDescendants = false,
             }, SectionFrame)
 
             local RightLayout = library:create("UIListLayout", {
                 HorizontalAlignment = Enum.HorizontalAlignment.Center,
                 SortOrder = Enum.SortOrder.LayoutOrder,
                 Padding = UDim.new(0, 12),
+            }, Right)
+
+            local RightPadding = library:create("UIPadding", {
+                PaddingTop = UDim.new(0, 10),
+                PaddingBottom = UDim.new(0, 10),
             }, Right)
             
             RightLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -998,7 +1010,7 @@ end
                                 Position = UDim2.new(1, 5, 0, 0),
                                 Size = UDim2.new(0, 200, 0, 170),
                                 Visible = false,
-                                ZIndex = 2,
+                                ZIndex = 50,
                             }, ColorButton)
 
                             local ColorPicker = library:create("ImageButton", {
@@ -1010,7 +1022,7 @@ end
                                 AutoButtonColor = false,
                                 Image = "rbxassetid://4155801252",
                                 ImageColor3 = Color3.fromRGB(255, 0, 4),
-                                ZIndex = 2,
+                                ZIndex = 51,
                             }, ColorFrame)
 
                             local ColorPick = library:create("Frame", {
@@ -1018,7 +1030,7 @@ end
                                 BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 Size = UDim2.new(0, 1, 0, 1),
-                                ZIndex = 2,
+                                ZIndex = 52,
                             }, ColorPicker)
 
                             local HuePicker = library:create("TextButton", {
@@ -1027,7 +1039,7 @@ end
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 Position = UDim2.new(0, 10, 0, 10),
                                 Size = UDim2.new(0, 20, 0, 150),
-                                ZIndex = 2,
+                                ZIndex = 51,
                                 AutoButtonColor = false,
                                 Text = "",
                             }, ColorFrame)
@@ -1050,7 +1062,7 @@ end
                                 BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 Size = UDim2.new(1, 0, 0, 1),
-                                ZIndex = 2,
+                                ZIndex = 52,
                             }, HuePicker)
 
                             local in_color = false
@@ -1094,14 +1106,14 @@ end
                                     Image = "rbxassetid://3887014957",
                                     ScaleType = Enum.ScaleType.Tile,
                                     TileSize = UDim2.new(0, 10, 0, 10),
-                                    ZIndex = 2,
+                                    ZIndex = 51,
                                 }, ColorFrame)
 
                                 TransparencyColor = library:create("ImageLabel", {
                                     BackgroundTransparency = 1,
                                     Size = UDim2.new(1, 0, 1, 0),
                                     Image = "rbxassetid://3887017050",
-                                    ZIndex = 2,
+                                    ZIndex = 52,
                                 }, TransparencyPicker)
 
                                 TransparencyPick = library:create("Frame", {
@@ -1109,7 +1121,7 @@ end
                                     BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                                     BorderColor3 = Color3.fromRGB(0, 0, 0),
                                     Size = UDim2.new(0, 1, 1, 0),
-                                    ZIndex = 2,
+                                    ZIndex = 53,
                                 }, TransparencyPicker)
 
                                 extra_value.Transparency = 0
@@ -2578,6 +2590,21 @@ end
                             Name = "CurveLine",
                             BackgroundColor3 = Color3.fromRGB(84, 101, 255),
                             BorderSizePixel = 0,
+                            ZIndex = 2,
+                        }, LineFrame)
+
+                        local CurveLine2 = library:create("Frame", {
+                            Name = "CurveLine2",
+                            BackgroundColor3 = Color3.fromRGB(84, 101, 255),
+                            BorderSizePixel = 0,
+                            ZIndex = 2,
+                        }, LineFrame)
+
+                        local CurveLine3 = library:create("Frame", {
+                            Name = "CurveLine3",
+                            BackgroundColor3 = Color3.fromRGB(84, 101, 255),
+                            BorderSizePixel = 0,
+                            ZIndex = 2,
                         }, LineFrame)
 
                         local Handle1 = library:create("TextButton", {
@@ -2586,7 +2613,8 @@ end
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(value.BezierCurve[1], 0, 1 - value.BezierCurve[2], 0),
                             Size = UDim2.new(0, 10, 0, 10),
-                            Text = ""
+                            Text = "",
+                            ZIndex = 3,
                         }, LineFrame)
 
                         local Handle2 = library:create("TextButton", {
@@ -2595,25 +2623,50 @@ end
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(value.BezierCurve[3], 0, 1 - value.BezierCurve[4], 0),
                             Size = UDim2.new(0, 10, 0, 10),
-                            Text = ""
+                            Text = "",
+                            ZIndex = 3,
                         }, LineFrame)
 
                         local corner1 = library:create("UICorner", {CornerRadius = UDim.new(1, 0)}, Handle1)
                         local corner2 = library:create("UICorner", {CornerRadius = UDim.new(1, 0)}, Handle2)
 
                         local function updateLine()
-                            local p0 = Vector2.new(0, 1)
-                            local p1 = Vector2.new(value.BezierCurve[1], 1 - value.BezierCurve[2])
-                            local p2 = Vector2.new(value.BezierCurve[3], 1 - value.BezierCurve[4])
-                            local p3 = Vector2.new(1, 0)
-                            CurveLine.Size = UDim2.new(0, (p3 - p0).Magnitude * 5, 0, 2)
-                            CurveLine.Position = UDim2.new(0, 0, 0.5, 0)
-                            CurveLine.Rotation = math.deg(math.atan2(p3.Y - p0.Y, p3.X - p0.X))
+                            local p0 = Vector2.new(0, CurveCanvas.AbsoluteSize.Y)
+                            local p1 = Vector2.new(value.BezierCurve[1] * CurveCanvas.AbsoluteSize.X, (1 - value.BezierCurve[2]) * CurveCanvas.AbsoluteSize.Y)
+                            local p2 = Vector2.new(value.BezierCurve[3] * CurveCanvas.AbsoluteSize.X, (1 - value.BezierCurve[4]) * CurveCanvas.AbsoluteSize.Y)
+                            local p3 = Vector2.new(CurveCanvas.AbsoluteSize.X, 0)
+                            
+                            if CurveCanvas.AbsoluteSize.X == 0 then return end
+                            
+                            -- Simple straight line between points for visual indication since drawing actual curves in Roblox UI is complex without CanvasDraw
+                            CurveLine.Size = UDim2.new(0, (p1 - p0).Magnitude, 0, 2)
+                            CurveLine.Position = UDim2.new(0, p0.X, 0, p0.Y)
+                            CurveLine.AnchorPoint = Vector2.new(0, 0.5)
+                            CurveLine.Rotation = math.deg(math.atan2(p1.Y - p0.Y, p1.X - p0.X))
+
+                            CurveLine2.Size = UDim2.new(0, (p2 - p1).Magnitude, 0, 2)
+                            CurveLine2.Position = UDim2.new(0, p1.X, 0, p1.Y)
+                            CurveLine2.AnchorPoint = Vector2.new(0, 0.5)
+                            CurveLine2.Rotation = math.deg(math.atan2(p2.Y - p1.Y, p2.X - p1.X))
+
+                            CurveLine3.Size = UDim2.new(0, (p3 - p2).Magnitude, 0, 2)
+                            CurveLine3.Position = UDim2.new(0, p2.X, 0, p2.Y)
+                            CurveLine3.AnchorPoint = Vector2.new(0, 0.5)
+                            CurveLine3.Rotation = math.deg(math.atan2(p3.Y - p2.Y, p3.X - p2.X))
+                            
+                            -- Position handles correctly relative to canvas size
+                            Handle1.Position = UDim2.new(value.BezierCurve[1], -5, 1 - value.BezierCurve[2], -5)
+                            Handle2.Position = UDim2.new(value.BezierCurve[3], -5, 1 - value.BezierCurve[4], -5)
                         end
 
-                        updateLine()
+                        -- Delay initial update until absolute size is set
+                        task.spawn(function()
+                            task.wait()
+                            updateLine()
+                        end)
 
                         local dragging = nil
+                        
                         Handle1.MouseButton1Down:Connect(function()
                             dragging = 1
                         end)
@@ -2621,30 +2674,43 @@ end
                             dragging = 2
                         end)
 
-                        uis.InputChanged:Connect(function(input)
-                            if dragging then
-                                local pos = CurveFrame.AbsolutePosition
-                                local size = CurveFrame.AbsoluteSize
-                                local x = math.clamp((mouse.X - pos.X) / size.X, 0, 1)
-                                local y = math.clamp(1 - ((mouse.Y - pos.Y) / size.Y), 0, 1)
-                                if dragging == 1 then
-                                    value.BezierCurve[1] = x
-                                    value.BezierCurve[2] = y
-                                    Handle1.Position = UDim2.new(x, 0, y, 0)
-                                else
-                                    value.BezierCurve[3] = x
-                                    value.BezierCurve[4] = y
-                                    Handle2.Position = UDim2.new(x, 0, y, 0)
-                                end
-                                updateLine()
-                                do_callback()
+                        local dragConnection
+                        uis.InputBegan:Connect(function(input)
+                            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                                dragConnection = uis.InputChanged:Connect(function(input)
+                                    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                                        local pos = CurveFrame.AbsolutePosition
+                                        local size = CurveFrame.AbsoluteSize
+                                        local x = math.clamp((mouse.X - pos.X) / size.X, 0, 1)
+                                        local y = math.clamp(((mouse.Y - pos.Y) / size.Y), 0, 1)
+                                        if dragging == 1 then
+                                            value.BezierCurve[1] = x
+                                            value.BezierCurve[2] = 1 - y
+                                            Handle1.Position = UDim2.new(x, -5, y, -5)
+                                        else
+                                            value.BezierCurve[3] = x
+                                            value.BezierCurve[4] = 1 - y
+                                            Handle2.Position = UDim2.new(x, -5, y, -5)
+                                        end
+                                        updateLine()
+                                        do_callback()
+                                    end
+                                end)
                             end
                         end)
 
                         uis.InputEnded:Connect(function(input)
                             if input.UserInputType == Enum.UserInputType.MouseButton1 then
                                 dragging = nil
+                                if dragConnection then
+                                    dragConnection:Disconnect()
+                                    dragConnection = nil
+                                end
                             end
+                        end)
+
+                        CurveCanvas:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+                            updateLine()
                         end)
 
                         function element:set_value(new_value, cb)
