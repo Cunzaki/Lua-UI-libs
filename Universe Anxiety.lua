@@ -272,18 +272,6 @@ function library.new(library_title, cfg_location)
 		syn.protect_gui(ScreenGui)
 	end
 
-    local Cursor = library:create("ImageLabel", {
-        Name = "Cursor",
-        BackgroundTransparency = 1,
-        Size = UDim2.new(0, 17, 0, 17),
-        Image = "rbxassetid://7205257578",
-        ZIndex = 6969,
-    }, ScreenGui)
-
-    rs.RenderStepped:Connect(function()
-        Cursor.Position = UDim2.new(0, mouse.X, 0, mouse.Y + 36)
-    end)
-
 	ScreenGui.Parent = game:GetService("CoreGui")
 
     function menu.IsOpen()
@@ -525,7 +513,6 @@ end
                 ScrollBarThickness = 2,
                 ScrollBarImageColor3 = Color3.fromRGB(79, 95, 239),
                 BorderSizePixel = 0,
-                ClipsDescendants = false,
             }, SectionFrame)
 
             local LeftLayout = library:create("UIListLayout", {
@@ -553,7 +540,6 @@ end
                 ScrollBarThickness = 2,
                 ScrollBarImageColor3 = Color3.fromRGB(79, 95, 239),
                 BorderSizePixel = 0,
-                ClipsDescendants = false,
             }, SectionFrame)
 
             local RightLayout = library:create("UIListLayout", {
@@ -1004,14 +990,12 @@ end
 
                             local ColorFrame = library:create("Frame", {
                                 Name = "ColorFrame",
-                                Parent = ColorButton,
                                 BackgroundColor3 = Color3.fromRGB(10, 10, 10),
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
-                                Position = UDim2.new(1, 5, 0, 0),
                                 Size = UDim2.new(0, 200, 0, 170),
                                 Visible = false,
                                 ZIndex = 50,
-                            }, ColorButton)
+                            }, ScreenGui)
 
                             local ColorPicker = library:create("ImageButton", {
                                 Name = "ColorPicker",
@@ -1068,6 +1052,7 @@ end
                             local in_color = false
                             local in_color2 = false
                             ColorButton.MouseButton1Down:Connect(function()
+                                ColorFrame.Position = UDim2.new(0, ColorButton.AbsolutePosition.X + ColorButton.AbsoluteSize.X + 5, 0, ColorButton.AbsolutePosition.Y)
                                 ColorFrame.Visible = not ColorFrame.Visible
                             end)
                             ColorFrame.MouseEnter:Connect(function()
@@ -2727,7 +2712,11 @@ end
                     elseif type == "ColorPicker" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 30)
 
-                        value = {ColorPicker = default and default or Color3.fromRGB(255, 255, 255)}
+                        local defaultColor = Color3.fromRGB(255, 255, 255)
+                        if default and typeof(default) == "Color3" then
+                            defaultColor = default
+                        end
+                        value = {ColorPicker = defaultColor}
 
                         local ColorPickerFrame = library:create("Frame", {
                             Name = "ColorPicker",
@@ -2775,10 +2764,9 @@ end
                                     Name = "ColorPicker",
                                     BackgroundColor3 = Color3.fromRGB(10, 10, 10),
                                     BorderColor3 = Color3.fromRGB(0, 0, 0),
-                                    Position = UDim2.new(0, 230, 0, 25),
                                     Size = UDim2.new(0, 200, 0, 170),
-                                    ZIndex = 2,
-                                }, ColorPickerFrame)
+                                    ZIndex = 50,
+                                }, ScreenGui)
 
                                 local ColorPickFrame = library:create("ImageButton", {
                                     Name = "ColorPickFrame",
@@ -2789,7 +2777,7 @@ end
                                     AutoButtonColor = false,
                                     Image = "rbxassetid://4155801252",
                                     ImageColor3 = Color3.fromHSV(h, 1, 1),
-                                    ZIndex = 2,
+                                    ZIndex = 51,
                                 }, ColorPicker)
 
                                 ColorPick = library:create("Frame", {
@@ -2797,7 +2785,7 @@ end
                                     BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                                     BorderColor3 = Color3.fromRGB(0, 0, 0),
                                     Size = UDim2.new(0, 1, 0, 1),
-                                    ZIndex = 2,
+                                    ZIndex = 52,
                                 }, ColorPickFrame)
 
                                 HuePicker = library:create("TextButton", {
@@ -2806,7 +2794,7 @@ end
                                     BorderColor3 = Color3.fromRGB(0, 0, 0),
                                     Position = UDim2.new(0, 10, 0, 10),
                                     Size = UDim2.new(0, 20, 0, 150),
-                                    ZIndex = 2,
+                                    ZIndex = 51,
                                     AutoButtonColor = false,
                                     Text = "",
                                 }, ColorPicker)
@@ -2829,21 +2817,72 @@ end
                                     BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                                     BorderColor3 = Color3.fromRGB(0, 0, 0),
                                     Size = UDim2.new(1, 0, 0, 1),
-                                    ZIndex = 2,
+                                    ZIndex = 52,
                                 }, HuePicker)
 
                                 ColorPick.Position = UDim2.new(1 - s, 0, 1 - v, 0)
                                 HuePick.Position = UDim2.new(0, 0, 1 - h, -1)
+
+                                ColorPicker.MouseEnter:Connect(function() in_color2 = true end)
+                                ColorPicker.MouseLeave:Connect(function() in_color2 = false end)
+
+                                local function update_color()
+                                    local ColorX = math.clamp((mouse.X - ColorPickFrame.AbsolutePosition.X) / ColorPickFrame.AbsoluteSize.X, 0, 1)
+                                    local ColorY = math.clamp((mouse.Y - ColorPickFrame.AbsolutePosition.Y) / ColorPickFrame.AbsoluteSize.Y, 0, 1)
+                                    ColorPick.Position = UDim2.new(ColorX, 0, ColorY, 0)
+                                    s = 1 - ColorX
+                                    v = 1 - ColorY
+                                    local newColor = Color3.fromHSV(h, s, v)
+                                    ColorButton.BackgroundColor3 = newColor
+                                    ColorPickFrame.ImageColor3 = Color3.fromHSV(h, 1, 1)
+                                    value.ColorPicker = newColor
+                                    do_callback()
+                                end
+
+                                local function update_hue()
+                                    local y = math.clamp((mouse.Y - HuePicker.AbsolutePosition.Y) / HuePicker.AbsoluteSize.Y, 0, 1)
+                                    HuePick.Position = UDim2.new(0, 0, y, -1)
+                                    h = 1 - y
+                                    local newColor = Color3.fromHSV(h, s, v)
+                                    ColorButton.BackgroundColor3 = newColor
+                                    ColorPickFrame.ImageColor3 = Color3.fromHSV(h, 1, 1)
+                                    value.ColorPicker = newColor
+                                    do_callback()
+                                end
+
+                                ColorPickFrame.MouseButton1Down:Connect(function()
+                                    update_color()
+                                    local moveconn
+                                    moveconn = mouse.Move:Connect(update_color)
+                                    local upconn
+                                    upconn = uis.InputEnded:Connect(function(input)
+                                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                                            moveconn:Disconnect()
+                                            upconn:Disconnect()
+                                        end
+                                    end)
+                                end)
+
+                                HuePicker.MouseButton1Down:Connect(function()
+                                    update_hue()
+                                    local moveconn
+                                    moveconn = mouse.Move:Connect(update_hue)
+                                    local upconn
+                                    upconn = uis.InputEnded:Connect(function(input)
+                                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                                            moveconn:Disconnect()
+                                            upconn:Disconnect()
+                                        end
+                                    end)
+                                end)
                             end
+                            
+                            ColorPicker.Position = UDim2.new(0, ColorButton.AbsolutePosition.X + ColorButton.AbsoluteSize.X + 5, 0, ColorButton.AbsolutePosition.Y)
                             ColorPicker.Visible = not ColorPicker.Visible
                         end)
 
                         ColorPickerFrame.MouseEnter:Connect(function() in_color = true end)
                         ColorPickerFrame.MouseLeave:Connect(function() in_color = false end)
-                        if ColorPicker then
-                            ColorPicker.MouseEnter:Connect(function() in_color2 = true end)
-                            ColorPicker.MouseLeave:Connect(function() in_color2 = false end)
-                        end
 
                         uis.InputBegan:Connect(function(input)
                             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2 then
@@ -2852,60 +2891,6 @@ end
                                 end
                             end
                         end)
-
-                        local function update_color()
-                            local ColorX = math.clamp((mouse.X - ColorPickFrame.AbsolutePosition.X) / ColorPickFrame.AbsoluteSize.X, 0, 1)
-                            local ColorY = math.clamp((mouse.Y - ColorPickFrame.AbsolutePosition.Y) / ColorPickFrame.AbsoluteSize.Y, 0, 1)
-                            ColorPick.Position = UDim2.new(ColorX, 0, ColorY, 0)
-                            s = 1 - ColorX
-                            v = 1 - ColorY
-                            local newColor = Color3.fromHSV(h, s, v)
-                            ColorButton.BackgroundColor3 = newColor
-                            if ColorPickFrame then ColorPickFrame.ImageColor3 = Color3.fromHSV(h, 1, 1) end
-                            value.ColorPicker = newColor
-                            do_callback()
-                        end
-
-                        local function update_hue()
-                            local y = math.clamp((mouse.Y - HuePicker.AbsolutePosition.Y) / HuePicker.AbsoluteSize.Y, 0, 1)
-                            HuePick.Position = UDim2.new(0, 0, y, -1)
-                            h = 1 - y
-                            local newColor = Color3.fromHSV(h, s, v)
-                            ColorButton.BackgroundColor3 = newColor
-                            if ColorPickFrame then ColorPickFrame.ImageColor3 = Color3.fromHSV(h, 1, 1) end
-                            value.ColorPicker = newColor
-                            do_callback()
-                        end
-
-                        if ColorPickFrame then
-                            ColorPickFrame.MouseButton1Down:Connect(function()
-                                update_color()
-                                local moveconn
-                                moveconn = mouse.Move:Connect(update_color)
-                                local upconn
-                                upconn = uis.InputEnded:Connect(function(input)
-                                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                                        moveconn:Disconnect()
-                                        upconn:Disconnect()
-                                    end
-                                end)
-                            end)
-                        end
-
-                        if HuePicker then
-                            HuePicker.MouseButton1Down:Connect(function()
-                                update_hue()
-                                local moveconn
-                                moveconn = mouse.Move:Connect(update_hue)
-                                local upconn
-                                upconn = uis.InputEnded:Connect(function(input)
-                                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                                        moveconn:Disconnect()
-                                        upconn:Disconnect()
-                                    end
-                                end)
-                            end)
-                        end
 
                         function element:set_value(new_value, cb)
                             value = new_value and new_value or value
