@@ -1007,7 +1007,7 @@
                 });
                 
                 library:create("UIListLayout", {
-                    Parent = ScrollingFrame;
+                    Parent = elements;
                     Padding = dim(0, 5);
                     SortOrder = Enum.SortOrder.LayoutOrder
                 });
