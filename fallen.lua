@@ -2669,8 +2669,8 @@
                     min = options.min or options.minimum or 0,
                     max = options.max or options.maximum or 100,
                     step = options.step or options.interval or 1,
-                    default = options.default or cfg.min,
-                    value = options.default or cfg.min,
+                    default = options.default or (options.min or 0),
+                    value = options.default or (options.min or 0),
                 }
 
                 flags[cfg.flag] = cfg.value
